@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
-
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 
 import java.io.FileNotFoundException;
@@ -16,20 +17,26 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 
 public class Crawl {
-  public Crawl(){}
+  
+
+	public Crawl(){}
+  
+  
   public static void main (String[] args){
     System.out.println("Init...");
     System.out.println("==========");
+    System.setProperty("https.proxyHost","proxy");
+    System.setProperty("https.proxyPort","3128");
     ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-    vertices.add(new Vertex("lip6.fr", new ArrayList<String>()));
-    vertices.get(0).urls.add("https://www-apr.lip6.fr/~buixuan/aaga2017");
-    vertices.get(0).urls.add("https://www-apr.lip6.fr/~buixuan/");
+    vertices.add(new Vertex("gihtub.com", new ArrayList<String>()));
+    vertices.get(0).urls.add("https://github.com/nassimerrahoui/");
+    vertices.get(0).urls.add("https://github.com/wichiv82/");
     ArrayList<String> todo = new ArrayList<String>();
     todo.addAll(vertices.get(0).urls);
 
     System.out.println("Starting with domain: "+vertices.get(0).domain);
 
-    while (!todo.isEmpty() && vertices.size()<20) {
+    while (!todo.isEmpty() && vertices.size()<100) {
       String url = todo.remove(0);
       System.out.println("   > Checking URL: "+url);
       try {
@@ -38,6 +45,8 @@ public class Crawl {
         huc.setConnectTimeout(5 * 1000);
         huc.connect();
         InputStream inputStream = huc.getInputStream();
+        
+        System.out.println("CONNECTION ETABLISHED");
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
         String inputLine;
@@ -105,6 +114,9 @@ public class Crawl {
     saveToFile("domainNames", vertices);
     return;
   }
+  
+  
+  
   private static void saveToFile(String filename,ArrayList<Vertex> vertices){
     int index=0;
     try {
